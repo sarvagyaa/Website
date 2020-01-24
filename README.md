@@ -1,4 +1,4 @@
-# Data Beetle Website
+# The Data Beetle Website
 
 This is the code for my website, [Data Beetle](https://databeetle.pythonanywhere.com/), an introduction to my work. I've used [CodeRed CMS](https://www.coderedcorp.com/cms/) to create it and [PythonAnywhere](https://www.pythonanywhere.com/) to host it.
 
