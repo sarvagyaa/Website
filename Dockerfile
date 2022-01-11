@@ -1,21 +1,27 @@
-FROM python:3.6
-LABEL maintainer="intro"
+FROM python:latest
 
 ENV PYTHONUNBUFFERED 1
-ENV DJANGO_ENV dev
 
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install -r /code/requirements.txt
-RUN pip install gunicorn
+# Set the Django settings to use.
+ENV DJANGO_ENV "dev"
+ENV DJANGO_SETTINGS_MODULE "intro.settings.dev"
 
-COPY . /code/
-WORKDIR /code/
+# Install a WSGI server into the container image.
+RUN pip install waitress
 
-RUN python manage.py migrate
+# Code will end up living in /app/
+WORKDIR /app/
 
+# Create a "coderedcms" user account to run the appp.
 RUN useradd coderedcms
-RUN chown -R coderedcms /code
+RUN chown -R coderedcms /app/
 USER coderedcms
 
+# Copy our entrypoint script.
+COPY ./docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Finally, run the app on port 8000.
 EXPOSE 8000
-CMD exec gunicorn intro.wsgi:application --bind 0.0.0.0:8000 --workers 3
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD exec waitress serve --listen "*:8000" "intro.wsgi:application"
