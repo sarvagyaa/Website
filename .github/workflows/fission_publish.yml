@@ -1,4 +1,4 @@
-name: Build and deploy on web3
+name: Build and deploy on web3 via fission
 
 # Controls when the workflow will run
 on:
